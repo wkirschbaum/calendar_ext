@@ -1,6 +1,6 @@
 # CalendarExt
 
-Additional functions for the Date, Time and DateTime.
+Additional functions for Date, Time and DateTime.
 
 ** WARNING **
 
