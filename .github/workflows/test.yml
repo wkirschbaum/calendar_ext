@@ -11,6 +11,8 @@ jobs:
         elixir:
           - 1.11-slim   # otp 23
           - 1.10-slim   # otp 22
+    container:
+      image: elixir:${{ matrix.elixir }}
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
