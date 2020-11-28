@@ -1,20 +1,24 @@
-on: push
+name: Test
+
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    name: OTP ${{matrix.elixir}}
     strategy:
       matrix:
-        otp: ['20.3', '21.3', '22.3', '23.1.4']
-        elixir: ['1.7.4', '1.8.2', '1.9.4', '1.10.2', '1.11.3']
+        elixir:
+          - 1.11-slim   # otp 23
+          - 1.10-slim   # otp 22
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-elixir@v1
-        with:
-          otp-version: ${{matrix.otp}}
-          elixir-version: ${{matrix.elixir}}
-      - run: mix local.hex --force
-      - run: mix local.rebar --force
-      - run: mix deps.get
-      - run: mix test
+      - name: Install Dependencies
+        env:
+          MIX_ENV: test
+        run:
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+      - name: Run Tests
+        run: mix test
