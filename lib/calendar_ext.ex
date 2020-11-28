@@ -2,11 +2,12 @@ defmodule CalendarExt do
   alias CalendarExt.Comparible
 
   @type dateable :: Date.t() | DateTime.t() | NaiveDateTime.t()
+  @type nillable_date :: Date.t() | nil
 
   @doc ~S"""
   Converts dateable to %Date{}. It will return nil for nil values.
   """
-  @spec to_date(dateable) :: Date.t()
+  @spec to_date(dateable) :: nillable_date()
   def to_date(%Date{} = date), do: date
   def to_date(%DateTime{} = date), do: DateTime.to_date(date)
   def to_date(%NaiveDateTime{} = date), do: NaiveDateTime.to_date(date)
