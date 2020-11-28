@@ -2,6 +2,27 @@ defmodule CalendarExtTest do
   use ExUnit.Case
   doctest CalendarExt
 
+  describe "to_date" do
+    test "returns date for a Date" do
+      date = Date.utc_today()
+      assert CalendarExt.to_date(date) == date
+    end
+
+    test "returns date for a NaiveDateTime" do
+      date = NaiveDateTime.utc_now()
+      assert CalendarExt.to_date(date) == NaiveDateTime.to_date(date)
+    end
+
+    test "returns date for a DateTime" do
+      date = DateTime.utc_now()
+      assert CalendarExt.to_date(date) == DateTime.to_date(date)
+    end
+
+    test "returns nil for nil" do
+      assert CalendarExt.to_date(nil) == nil
+    end
+  end
+
   describe "max" do
     test "returns left if left is max Date" do
       left = elem(Date.new(2010, 9, 25), 1)
@@ -43,13 +64,6 @@ defmodule CalendarExtTest do
       right = Time.add(left, 10)
 
       assert CalendarExt.max(left, right) == right
-    end
-
-    test "fails when different types" do
-      left = Time.utc_now()
-      right = DateTime.utc_now()
-
-      assert_raise FunctionClauseError, fn () -> CalendarExt.max(left, right) end
     end
   end
 

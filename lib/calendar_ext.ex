@@ -1,6 +1,17 @@
 defmodule CalendarExt do
   alias CalendarExt.Comparible
 
+  @type dateable :: Date.t() | DateTime.t() | NaiveDateTime.t()
+
+  @doc ~S"""
+  Converts dateable to %Date{}. It will return nil for nil values.
+  """
+  @spec to_date(dateable) :: Date.t()
+  def to_date(%Date{} = date), do: date
+  def to_date(%DateTime{} = date), do: DateTime.to_date(date)
+  def to_date(%NaiveDateTime{} = date), do: NaiveDateTime.to_date(date)
+  def to_date(nil), do: nil
+
   @doc ~S"""
   Calculates the week number of week days between `from_date` and `to_date`.
 
@@ -14,9 +25,7 @@ defmodule CalendarExt do
   iex> CalendarExt.diff_weekdays(~D[2020-10-10], ~D[2020-08-20])
   0
   """
-  @type diffable :: Date.t() | DateTime.t() | NaiveDateTime.t()
-
-  @spec diff_weekdays(diffable(), diffable()) :: integer
+  @spec diff_weekdays(dateable(), dateable()) :: integer
   def diff_weekdays(%DateTime{} = from_date, %DateTime{} = to_date) do
     diff_weekdays(
       DateTime.to_date(from_date),
