@@ -1,4 +1,6 @@
 defmodule CalendarExt do
+  alias CalendarExt.Comparible
+
   @doc ~S"""
   Calculates the week number of week days between `from_date` and `to_date`.
 
@@ -12,7 +14,23 @@ defmodule CalendarExt do
   iex> CalendarExt.diff_weekdays(~D[2020-10-10], ~D[2020-08-20])
   0
   """
-  @spec diff_weekdays(Date.t(), Date.t()) :: integer
+  @type diffable :: Date.t() | DateTime.t() | NaiveDateTime.t()
+
+  @spec diff_weekdays(diffable(), diffable()) :: integer
+  def diff_weekdays(%DateTime{} = from_date, %DateTime{} = to_date) do
+    diff_weekdays(
+      DateTime.to_date(from_date),
+      DateTime.to_date(to_date)
+    )
+  end
+
+  def diff_weekdays(%NaiveDateTime{} = from_date, %NaiveDateTime{} = to_date) do
+    diff_weekdays(
+      NaiveDateTime.to_date(from_date),
+      NaiveDateTime.to_date(to_date)
+    )
+  end
+
   def diff_weekdays(%Date{} = from_date, %Date{} = to_date) do
     saturday = 6
 
@@ -42,34 +60,20 @@ defmodule CalendarExt do
   @doc ~S"""
   Returns the latest date
   """
-  @spec min(calendar_ext, calendar_ext) :: calendar_ext
-  def min(%Date{} = left, %Date{} = right) do
-    case Date.compare(left, right) do
+  @spec min(Comparible.t(), Comparible.t()) :: Comparible.t()
+  def min(left, right) do
+    case Comparible.compare(left, right) do
       :lt -> left
       _ -> right
     end
   end
 
-  # def max(%DateTime{} = left, %DateTime{} = right) do
-  #   case DateTime.compare(left, right) do
-  #     :lt -> right
-  #     _ -> left
-  #   end
-  # end
-
-  # def max(%NaiveDateTime{} = left, %NaiveDateTime{} = right) do
-  #   case NaiveDateTime.compare(left, right) do
-  #     :lt -> right
-  #     _ -> left
-  #   end
-  # end
-
   @doc ~S"""
   Returns the earliest date.
   """
-  @spec max(calendar_ext, calendar_ext) :: calendar_ext
-  def max(%Date{} = left, %Date{} = right) do
-    case Date.compare(left, right) do
+  @spec max(Comparible.t(), Comparible.t()) :: Comparible.t()
+  def max(left, right) do
+    case Comparible.compare(left, right) do
       :gt -> left
       _ -> right
     end

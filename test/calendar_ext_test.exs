@@ -23,6 +23,34 @@ defmodule CalendarExtTest do
 
       assert CalendarExt.max(left, right) == left
     end
+
+    test "returns right if right is after left DateTime" do
+      left = DateTime.utc_now
+      right = DateTime.add(left, 10)
+
+      assert CalendarExt.max(left, right) == right
+    end
+
+    test "returns right if right is after left NaiveDateTime" do
+      left = NaiveDateTime.utc_now
+      right = NaiveDateTime.add(left, 10)
+
+      assert CalendarExt.max(left, right) == right
+    end
+
+    test "returns right if right is after left Time" do
+      left = Time.utc_now()
+      right = Time.add(left, 10)
+
+      assert CalendarExt.max(left, right) == right
+    end
+
+    test "fails when different types" do
+      left = Time.utc_now()
+      right = DateTime.utc_now()
+
+      assert_raise FunctionClauseError, fn () -> CalendarExt.max(left, right) end
+    end
   end
 
   describe "min" do
@@ -139,6 +167,20 @@ defmodule CalendarExtTest do
     test "from_date is after to_date returns 0" do
       from_date = elem(Date.new(2020, 09, 19), 1)
       to_date = elem(Date.new(2020, 09, 21), 1)
+
+      assert CalendarExt.diff_weekdays(to_date, from_date) == 0
+    end
+
+    test "works for DateTime" do
+      from_date = Date.utc_today()
+      to_date = from_date
+
+      assert CalendarExt.diff_weekdays(to_date, from_date) == 0
+    end
+
+    test "works for NaiveDateTime" do
+      from_date = NaiveDateTime.utc_now()
+      to_date = from_date
 
       assert CalendarExt.diff_weekdays(to_date, from_date) == 0
     end
