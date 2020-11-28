@@ -5,7 +5,7 @@ defmodule CalendarExt.MixProject do
     [
       app: :calendar_ext,
       version: "0.1.1",
-      elixir: "~> 1.10",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
