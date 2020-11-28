@@ -2,6 +2,63 @@ defmodule CalendarExtTest do
   use ExUnit.Case
   doctest CalendarExt
 
+  describe "max" do
+    test "returns left if left is max Date" do
+      left = elem(Date.new(2010, 9, 25), 1)
+      right = elem(Date.new(2010, 7, 3), 1)
+
+      assert CalendarExt.max(left, right) == left
+    end
+
+    test "returns right if right is max Date" do
+      left = elem(Date.new(2011, 9, 25), 1)
+      right = elem(Date.new(2012, 10, 3), 1)
+
+      assert CalendarExt.max(left, right) == right
+    end
+
+    test "returns left if left eq right Date" do
+      left = elem(Date.new(2011, 9, 25), 1)
+      right = elem(Date.new(2011, 9, 25), 1)
+
+      assert CalendarExt.max(left, right) == left
+    end
+  end
+
+  describe "min" do
+    test "returns left if left is min Date" do
+      left = elem(Date.new(2009, 9, 25), 1)
+      right = elem(Date.new(2010, 7, 3), 1)
+
+      assert CalendarExt.min(left, right) == left
+    end
+
+    test "returns right if right is min Date" do
+      left = elem(Date.new(2011, 9, 25), 1)
+      right = elem(Date.new(2010, 10, 3), 1)
+
+      assert CalendarExt.min(left, right) == right
+    end
+
+    test "returns left if left eq right Date" do
+      left = elem(Date.new(2011, 9, 25), 1)
+      right = elem(Date.new(2011, 9, 25), 1)
+
+      assert CalendarExt.min(left, right) == left
+    end
+  end
+
+  describe "utc_morning" do
+    test "it has zeros for hhmmssmm" do
+      morning = CalendarExt.utc_morning()
+
+      assert morning.hour == 0
+      assert morning.minute == 0
+      assert morning.second == 0
+      assert {0, _} = morning.microsecond
+    end
+  end
+
   describe "diff_weekdays" do
     test "on the same day" do
       day = elem(Date.new(2010, 7, 3), 1)
