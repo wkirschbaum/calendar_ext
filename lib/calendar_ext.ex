@@ -87,4 +87,9 @@ defmodule CalendarExt do
       _ -> right
     end
   end
+
+  @spec outside?(Comparible.t(), Comparible.t(), Comparible.t()) :: true | false
+  def outside?(date, start_date, end_date) do
+    Comparible.compare(date, start_date) == :lt || Comparible.compare(date, end_date) == :gt
+  end
 end

@@ -2,6 +2,50 @@ defmodule CalendarExtTest do
   use ExUnit.Case
   doctest CalendarExt
 
+  describe "outside?" do
+    test "returns true if a Date is before the start_date" do
+      date = elem(Date.new(2001, 1, 25), 1)
+
+      start_date = elem(Date.new(2010, 1, 25), 1)
+      end_date = elem(Date.new(2010, 3, 3), 1)
+
+      assert CalendarExt.outside?(date, start_date, end_date) == true
+    end
+
+    test "returns true if a Date is after the end_date" do
+      date = elem(Date.new(2101, 1, 25), 1)
+
+      start_date = elem(Date.new(2010, 1, 25), 1)
+      end_date = elem(Date.new(2010, 3, 3), 1)
+
+      assert CalendarExt.outside?(date, start_date, end_date) == true
+    end
+
+
+    test "returns false if a Date is on the start_date" do
+      start_date = elem(Date.new(2010, 1, 25), 1)
+      end_date = elem(Date.new(2010, 3, 3), 1)
+
+      assert CalendarExt.outside?(start_date, start_date, end_date) == false
+    end
+
+    test "returns false if a Date is on the end_date" do
+      start_date = elem(Date.new(2010, 1, 25), 1)
+      end_date = elem(Date.new(2010, 3, 3), 1)
+
+      assert CalendarExt.outside?(end_date, start_date, end_date) == false
+    end
+
+    test "returns false if a DateTime is before the start_date" do
+      date = elem(DateTime.new(Date.utc_today(), Time.utc_now()), 1)
+
+      start_date = DateTime.add(date, 10)
+      end_date = DateTime.add(start_date, 10)
+
+      assert CalendarExt.outside?(end_date, start_date, end_date) == false
+    end
+  end
+
   describe "to_date" do
     test "returns date for a Date" do
       date = Date.utc_today()
