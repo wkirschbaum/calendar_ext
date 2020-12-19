@@ -2,6 +2,43 @@ defmodule CalendarExtTest do
   use ExUnit.Case
   doctest CalendarExt
 
+  describe "to_naive_with_invalid_time" do
+    test "it leaves a valid UTC date as is" do
+      date = "2020-12-18T22:28:36Z"
+
+      assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-18 22:28:36]
+    end
+
+    test "it assumes UTC" do
+      date = "2020-12-18T22:28:36"
+
+      assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-18 22:28:36]
+    end
+
+    test "it adjusts the offset date" do
+      date = "2020-12-18T22:28:36+02:00"
+
+      assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-18 20:28:36]
+    end
+
+    test "it handles > 24 hours clock" do
+      date = "2020-12-18T24:28:36"
+
+      assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-19 00:28:36]
+    end
+
+    test "it handles milliseconds without timezone" do
+      date = "2020-12-19 07:28:48.548646"
+      assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-19 07:28:48.548646]
+    end
+
+    test "it handles milliseconds with timezone" do
+      date = "2020-12-19 07:28:48.548646Z"
+      assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-19 07:28:48.548646]
+    end
+  end
+
+
   describe "outside?" do
     test "returns true if a Date is before the start_date" do
       date = elem(Date.new(2001, 1, 25), 1)

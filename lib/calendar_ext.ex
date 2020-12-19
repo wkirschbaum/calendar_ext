@@ -4,6 +4,30 @@ defmodule CalendarExt do
   @type dateable :: Date.t() | DateTime.t() | NaiveDateTime.t()
   @type nillable_date :: Date.t() | nil
 
+
+  @spec to_naive_with_invalid_time(String.t()) :: NaiveDateTime.t()
+  def to_naive_with_invalid_time(date_string) do
+    case DateTime.from_iso8601(date_string) do
+      {:ok, date, _offset} ->
+        DateTime.to_naive(date)
+      {:error, :missing_offset} ->
+        to_naive_with_invalid_time(date_string <> "Z")
+      {:error, :invalid_time} ->
+        [date, time] = String.split(date_string, "T")
+        {:ok, date} = Date.from_iso8601(date)
+        NaiveDateTime.new!(date |> Date.add(1), modulus_time(time))
+    end
+  end
+
+  defp modulus_time(time_string) do
+    [h, m, s] = String.split(time_string, ":")
+    if h == "24" do
+      Time.from_iso8601!("00:#{m}:#{s}")
+    else
+      Time.from_iso8601!("#{h}:#{m}:#{s}")
+    end
+  end
+
   @doc ~S"""
   Converts dateable to %Date{}. It will return nil for nil values.
   """
