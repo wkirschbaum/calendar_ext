@@ -15,6 +15,12 @@ defmodule CalendarExtTest do
       assert CalendarExt.to_naive_with_invalid_time(date) == ~N[2020-12-18 22:28:36]
     end
 
+    test "it assumes default offset" do
+      date = "2020-12-18T22:28:36"
+
+      assert CalendarExt.to_naive_with_invalid_time(date, "+02:00") == ~N[2020-12-18 20:28:36]
+    end
+
     test "it adjusts the offset date" do
       date = "2020-12-18T22:28:36+02:00"
 
