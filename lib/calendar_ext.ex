@@ -15,18 +15,25 @@ defmodule CalendarExt do
       {:error, :invalid_time} ->
         [date, time] = String.split(date_string, "T")
         {:ok, date} = Date.from_iso8601(date)
-        NaiveDateTime.new!(date |> Date.add(1), modulus_time(time))
+        [
+          Date.to_iso8601(date |> Date.add(1)),
+          modulus_time(time)
+        ]
+        |> Enum.join("T")
+        |> to_naive_with_invalid_time(default_offset)
     end
   end
 
   defp modulus_time(time_string) do
     [h, m, s] = String.split(time_string, ":")
-    if h == "24" do
-      Time.from_iso8601!("00:#{m}:#{s}")
-    else
-      Time.from_iso8601!("#{h}:#{m}:#{s}")
-    end
+    {hour, _} = Integer.parse(h)
+
+    h = rem(hour, 24) |> Integer.to_string()
+
+    "#{h |> padz}:#{m |> padz}:#{s |> padz}"
   end
+
+  defp padz(val, num \\ 2), do: String.pad_leading(val, num, "0")
 
   @doc ~S"""
   Converts dateable to %Date{}. It will return nil for nil values.
