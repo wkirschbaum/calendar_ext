@@ -4,17 +4,19 @@ defmodule CalendarExt do
   @type dateable :: Date.t() | DateTime.t() | NaiveDateTime.t()
   @type nillable_date :: Date.t() | nil
 
-
   @spec to_naive_with_invalid_time(String.t()) :: NaiveDateTime.t()
   def to_naive_with_invalid_time(date_string, default_offset \\ "Z") do
     case DateTime.from_iso8601(date_string) do
       {:ok, date, _offset} ->
         DateTime.to_naive(date)
+
       {:error, :missing_offset} ->
         to_naive_with_invalid_time(date_string <> default_offset)
+
       {:error, :invalid_time} ->
         [date, time] = String.split(date_string, "T")
         {:ok, date} = Date.from_iso8601(date)
+
         [
           Date.to_iso8601(date |> Date.add(1)),
           modulus_time(time)
@@ -76,11 +78,8 @@ defmodule CalendarExt do
     saturday = 6
 
     if Date.diff(to_date, from_date) > 0 do
-      Date.range(to_date, from_date)
-      |> Enum.reject(fn date -> date == to_date end)
-      |> Enum.reduce(0, fn date, acc ->
-        acc + if Date.day_of_week(date) < saturday, do: 1, else: 0
-      end)
+      Date.range(from_date, Date.add(to_date, -1))
+      |> Enum.count(fn date -> Date.day_of_week(date) < saturday end)
     else
       0
     end

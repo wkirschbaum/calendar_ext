@@ -56,7 +56,6 @@ defmodule CalendarExtTest do
     end
   end
 
-
   describe "outside?" do
     test "returns true if a Date is before the start_date" do
       date = elem(Date.new(2001, 1, 25), 1)
@@ -75,7 +74,6 @@ defmodule CalendarExtTest do
 
       assert CalendarExt.outside?(date, start_date, end_date) == true
     end
-
 
     test "returns false if a Date is on the start_date" do
       start_date = elem(Date.new(2010, 1, 25), 1)
@@ -145,14 +143,14 @@ defmodule CalendarExtTest do
     end
 
     test "returns right if right is after left DateTime" do
-      left = DateTime.utc_now
+      left = DateTime.utc_now()
       right = DateTime.add(left, 10)
 
       assert CalendarExt.max(left, right) == right
     end
 
     test "returns right if right is after left NaiveDateTime" do
-      left = NaiveDateTime.utc_now
+      left = NaiveDateTime.utc_now()
       right = NaiveDateTime.add(left, 10)
 
       assert CalendarExt.max(left, right) == right
