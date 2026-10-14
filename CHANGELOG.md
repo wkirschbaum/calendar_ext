@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.9 (2026-10-14)
+
+- Update development dependencies (`ex_doc` 0.40.3 → 0.40.4, `earmark_parser`
+  1.4.45 → 1.4.46, `makeup` 1.2.2 → 1.2.3); no runtime changes
+- Update GitHub Actions to their Node 24 versions
+
 ## v0.1.8 (2026-07-17)
 
 - Fix `Date.range/2` deprecation warning in `CalendarExt.diff_weekdays/2`
